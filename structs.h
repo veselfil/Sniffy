@@ -5,4 +5,4 @@ class Device {
 		int DeviceID;
 		std::string DeviceName;
 		std::string DeviceDescription;
-}
+};

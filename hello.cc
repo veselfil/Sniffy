@@ -9,22 +9,38 @@
 // preprocessor definitions.
 //
 
-#include <node.h>
+//#include <node.h>
+#include <nan.h>
+
 using namespace v8;
+using namespace Nan;
+
 #include <pcap/pcap.h>
+
+#include "structs.h"
 
 #define LINE_LEN 16
 
-void RunCallback(const FunctionCallbackInfo<Value>& args)
+int main() {
+	return 0;
+}
+
+void RunCallback(const v8::FunctionCallbackInfo<Value>& args)
 {
 	Isolate* isolate = Isolate::GetCurrent();
-	HandleScope scope(isolate);
+	v8::HandleScope scope(isolate);
 
-	Local<Function> callback = Local<Function>::Cast(args[0]);
-	const unsigned argc = 1;
-	Local<Value> argv[argc] = { String::NewFromUtf8(isolate, "This actually fucking works and builds with WPCAP.") };
+	Local<Function> callback = Local<Function>::Cast(args[1]);
+	//const unsigned argc = 1;
+	//Local<Value> argv[argc] = { String::NewFromUtf8(isolate, "This actually fucking works and builds with WPCAP.") };
 
-	callback->Call(isolate->GetCurrentContext()->Global(), argc, argv);
+	if (!args[0]->IsNumber()) {
+		isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "The first parameter has to be a valid interface number")));
+		return;
+	}
+
+
+	// callback->Call(isolate->GetCurrentContext()->Global(), argc, argv);
 
 	pcap_if_t *alldevs, *d;
 	pcap_t *fp;
@@ -34,67 +50,30 @@ void RunCallback(const FunctionCallbackInfo<Value>& args)
 	struct pcap_pkthdr *header;
 	const u_char *pkt_data;
 
-	printf("pktdump_ex: prints the packets of the network using WinPcap.\n");
-	printf("   Usage: pktdump_ex [-s source]\n\n"
-		"   Examples:\n"
-		"      pktdump_ex -s file://c:/temp/file.acp\n"
-		"      pktdump_ex -s rpcap://\\Device\\NPF_{C8736017-F3C3-4373-94AC-9A34B7DAD998}\n\n");
+	inum = args[0]->NumberValue();
 
-	if (argc < 3)
+
+	// get the list of all devices
+	if (pcap_findalldevs_ex((char*) PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
 	{
+		fprintf(stderr, "Error in pcap_findalldevs_ex: %s\n", errbuf);
+		return;
+	}
 
-		printf("\nNo adapter selected: printing the device list:\n");
-		/* The user didn't provide a packet source: Retrieve the local device list */
-		if (pcap_findalldevs_ex((char*) PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
-		{
-			fprintf(stderr, "Error in pcap_findalldevs_ex: %s\n", errbuf);
-			return;
-		}
+	// find the selected device
+	for (d = alldevs, i = 0; i< inum - 1; d = d->next, i++);
 
-		/* Print the list */
-		for (d = alldevs; d; d = d->next)
-		{
-			printf("%d. %s\n    ", ++i, d->name);
-
-			if (d->description)
-				printf(" (%s)\n", d->description);
-			else
-				printf(" (No description available)\n");
-		}
-
-		if (i == 0)
-		{
-			fprintf(stderr, "No interfaces found! Exiting.\n");
-			return;
-		}
-
-		printf("Enter the interface number (1-%d):", i);
-		scanf("%d", &inum);
-
-		if (inum < 1 || inum > i)
-		{
-			printf("\nInterface number out of range.\n");
-
-			// Free the device list 
-			pcap_freealldevs(alldevs);
-			return;
-		}
-
-		/* Jump to the selected adapter */
-		for (d = alldevs, i = 0; i< inum - 1; d = d->next, i++);
-
-		/* Open the device */
-		if ((fp = pcap_open(d->name,
-			100 /*snaplen*/,
-			PCAP_OPENFLAG_PROMISCUOUS /*flags*/,
-			20 /*read timeout*/,
-			NULL /* remote authentication */,
-			errbuf)
-			) == NULL)
-		{
-			fprintf(stderr, "\nError opening adapter\n");
-			return;
-		}
+	/* Open the device */
+	if ((fp = pcap_open(d->name,
+		100 /*snaplen*/,
+		PCAP_OPENFLAG_PROMISCUOUS /*flags*/,
+		20 /*read timeout*/,
+		NULL /* remote authentication */,
+		errbuf)
+		) == NULL)
+	{
+		fprintf(stderr, "\nError opening adapter\n");
+		return;
 	}
 
 	/* Read the packets */
@@ -106,16 +85,12 @@ void RunCallback(const FunctionCallbackInfo<Value>& args)
 			continue;
 
 		/* print pkt timestamp and pkt len */
-		printf("%ld:%ld (%ld)\n", header->ts.tv_sec, header->ts.tv_usec, header->len);
+		// printf("%ld:%ld (%ld)\n", header->ts.tv_sec, header->ts.tv_usec, header->len);
 
-		/* Print the packet */
-		for (i = 1; (i < header->caplen + 1); i++)
-		{
-			printf("%.2x ", pkt_data[i - 1]);
-			if ((i % LINE_LEN) == 0) printf("\n");
-		}
+		const unsigned argc = 2;
+		Local<Value> argv[argc] = { Number::New(isolate, header->caplen), Nan::NewBuffer((char*) pkt_data, header->caplen).ToLocalChecked() };
 
-		printf("\n\n");
+		callback->Call(isolate->GetCurrentContext()->Global(), argc, argv);
 	}
 
 	if (res == -1)
@@ -125,16 +100,33 @@ void RunCallback(const FunctionCallbackInfo<Value>& args)
 	}
 }
 
-void SetDevicesData(const FunctionCallbackInfo<Value>& args, std::vector<Device> devices)
+void SetDevicesData(Isolate* isolate, const v8::FunctionCallbackInfo<Value>& args, std::vector<Device>& devices)
 {
+	Local<Array> resultArray = Array::New(isolate);
+
 	for (int i = 0; i < devices.size(); i++)
 	{
+		Local<Object> object = Object::New(isolate);
 		Device device = devices[i];
+
+		object->Set(String::NewFromUtf8(isolate, "Name"), String::NewFromUtf8(isolate, device.DeviceName.c_str()));
+		object->Set(String::NewFromUtf8(isolate, "Description"), String::NewFromUtf8(isolate, device.DeviceDescription.c_str()));
+		object->Set(String::NewFromUtf8(isolate, "ID"), Number::New(isolate, device.DeviceID));
+
+		resultArray->Set(i, object);
 	}
+
+	args.GetReturnValue().Set(resultArray);
 }
 
-void ListDevices(FunctionCallbackInfo<Value>& args) {
-	std::vector<	
+void ListDevices(const v8::FunctionCallbackInfo<Value>& args) {
+	std::vector<Device> devices;
+
+	int i = 0;
+	pcap_if_t *alldevs, *d;
+	char errbuf[PCAP_ERRBUF_SIZE];
+
+	Isolate* isolate = Isolate::GetCurrent();
 
 	if (pcap_findalldevs_ex((char*) PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
 	{
@@ -145,17 +137,24 @@ void ListDevices(FunctionCallbackInfo<Value>& args) {
 	/* Print the list */
 	for (d = alldevs; d; d = d->next)
 	{
-		printf("%d. %s\n    ", ++i, d->name);
+		Device device;
 
+		device.DeviceID = ++i;
 		if (d->description)
-			printf(" (%s)\n", d->description);
+			device.DeviceDescription = std::string(d->description);
 		else
-			printf(" (No description available)\n");
+			device.DeviceDescription = std::string("(No description available)");
+
+		device.DeviceName = std::string(d->name);
+
+		devices.push_back(device);
 	}
+
+	SetDevicesData(isolate, args, devices);
 }
 
 void Init(Handle<Object> exports) {
-	NODE_SET_METHOD(exports, "hello", RunCallback);
+	NODE_SET_METHOD(exports, "runCallback", RunCallback);
 	NODE_SET_METHOD(exports, "listDevices", ListDevices);
 }
 
