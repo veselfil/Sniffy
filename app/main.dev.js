@@ -11,7 +11,7 @@
  * @flow
  */
 import { app, BrowserWindow } from 'electron';
-import MenuBuilder from './menu';
+import childProcess from 'child_process';
 
 let mainWindow = null;
 
@@ -75,12 +75,20 @@ app.on('ready', async () => {
     }
     mainWindow.show();
     mainWindow.focus();
+
+    childProcess.exec("C:\\Dev\\ROP\\PacketCaptureEngineTest\\Release\\PacketCaptureEngineTest.exe -a 127.0.0.1 -p 5005", (err, stdout, stderr) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(stdout);
+      process.exit(0);// exit process once it is opened
+    });
+
   });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
 });
+

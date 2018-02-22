@@ -1,0 +1,18 @@
+.protoCol {
+  width: 20vw;
+}
+
+.lengthCol {
+  width: 20vw;
+}
+
+.ipCol {
+  width: 25vw;
+}
+
+.tableContainer {
+  height: 50vh;
+  overflow-y: scroll;
+}
+
+.portCol { width: 10vw; }
