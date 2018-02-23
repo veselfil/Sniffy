@@ -3,7 +3,7 @@
 }
 
 .lengthCol {
-  width: 20vw;
+  width: 10vw;
 }
 
 .ipCol {
@@ -11,7 +11,7 @@
 }
 
 .tableContainer {
-  height: 50vh;
+  height: 40vh;
   overflow-y: scroll;
 }
 

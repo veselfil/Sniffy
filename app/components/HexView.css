@@ -1,0 +1,16 @@
+.tableContainer table {
+  font-family: monospace;
+}
+
+.tableContainer table td {
+  text-align: center;
+  width: 1.5vw;
+}
+
+.tableContainer table thead td {
+  font-weight: bold;
+}
+
+.tableContainer table thead tr {
+  background: grey;
+}
