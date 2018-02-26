@@ -10,7 +10,7 @@ export default class StartStopButton extends React.Component {
   render() {
     const text = this.state.started ? this.props.startedText : this.props.stoppedText;
     return (
-      <button className={"btn " + this.state.started ? "btn-danger" : "btn-success"} onClick={() => this.handleClick()}>
+      <button className={"btn " + (this.state.started ? "btn-danger" : "btn-success")} onClick={() => this.handleClick()}>
         {text}
       </button>
     )

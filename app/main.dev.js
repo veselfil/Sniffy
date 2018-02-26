@@ -36,7 +36,7 @@ const installExtensions = async () => {
   ];
 
   return Promise
-    .all(extensions.map(name => installer.default(installer[name], forceDownload)))
+    .all(extensions.map(name => installer.default(installer[ name ], forceDownload)))
     .catch(console.log);
 };
 
@@ -76,15 +76,18 @@ app.on('ready', async () => {
     mainWindow.show();
     mainWindow.focus();
 
-    // childProcess.exec("C:\\Dev\\ROP\\PacketCaptureEngineTest\\Release\\PacketCaptureEngineTest.exe -a 127.0.0.1 -p 5005", (err, stdout, stderr) => {
-    //   if (err) {
-    //     console.error(err);
-    //     return;
-    //   }
-    //   console.log(stdout);
-    //   process.exit(0);// exit process once it is opened
-    // });
+    /* TODO: Change this for production packaging. */
+    const dirPath = __dirname.replace("\\app", "");
+    childProcess.exec(`\"${dirPath}/PacketCaptureEngineTest.exe\" -a 127.0.0.1 -p 5005`, (err, stdout, stderr) => {
+        if (err) {
+          console.error("Error in CaptureEngine!");
+          console.error(err)
+          return;
+        }
 
+        process.exit(0);
+      }
+    )
   });
 
   mainWindow.on('closed', () => {

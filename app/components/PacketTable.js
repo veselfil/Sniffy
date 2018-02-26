@@ -1,12 +1,13 @@
 import React from 'react';
 import stylesheet from './PacketTable.css'
 import { mapColor } from '../actions/proto-color-mapping'
+import PropTypes from 'prop-types';
 
 export default class PacketTable extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!nextProps.disableAutoscroll)
       if (this.autoscrollIntervalHandle === -1)
-        this.autoscrollIntervalHandle = setInterval(() => this.messagesEnd.scrollIntoView({ behavior: "smooth" }))
+        this.autoscrollIntervalHandle = setInterval(() => this.messagesEnd.scrollIntoView({ behavior: "smooth" }));
       else {
         clearInterval(this.autoscrollIntervalHandle);
         this.autoscrollIntervalHandle = -1;
@@ -65,3 +66,9 @@ export default class PacketTable extends React.Component {
     this.props.displayDetails(e, x.x);
   }
 }
+
+PacketTable.propTypes = {
+  displayDetails: PropTypes.func,
+  packetData: PropTypes.arrayOf(PropTypes.object),
+  disableAutoscroll: PropTypes.bool
+};
