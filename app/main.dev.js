@@ -76,14 +76,14 @@ app.on('ready', async () => {
     mainWindow.show();
     mainWindow.focus();
 
-    childProcess.exec("C:\\Dev\\ROP\\PacketCaptureEngineTest\\Release\\PacketCaptureEngineTest.exe -a 127.0.0.1 -p 5005", (err, stdout, stderr) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log(stdout);
-      process.exit(0);// exit process once it is opened
-    });
+    // childProcess.exec("C:\\Dev\\ROP\\PacketCaptureEngineTest\\Release\\PacketCaptureEngineTest.exe -a 127.0.0.1 -p 5005", (err, stdout, stderr) => {
+    //   if (err) {
+    //     console.error(err);
+    //     return;
+    //   }
+    //   console.log(stdout);
+    //   process.exit(0);// exit process once it is opened
+    // });
 
   });
 

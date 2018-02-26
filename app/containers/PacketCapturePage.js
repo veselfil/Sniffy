@@ -2,6 +2,7 @@ import React from 'react';
 import PacketTable from '../components/PacketTable';
 import PacketContents from "../components/PacketContents";
 import PacketCaptureInterface from '../packet_capture/PacketCaptureInterface'
+import StartStopButton from '../components/StartStopButton'
 
 export default class PacketCapturePage extends React.Component {
   constructor() {
@@ -28,22 +29,20 @@ export default class PacketCapturePage extends React.Component {
 
         {shouldRenderPacketDetails && <PacketContents packet={this.state.currentPacket}/>}
 
-        <button className={"btn btn-danger"} onClick={() => this.handleStopCapture()}>Stop capture</button>
-        <button className={"btn btn-success"} onClick={() => this.handleStartCapture()}>Start capture</button>
+        <StartStopButton onChangeState={(started) => this.handleChangeCaptureState(started)}
+                         startedText={"Stop capture"} stoppedText={"Start capture"}/>
       </div>
     );
   }
 
-  handleStopCapture() {
-    this.captureEngine.resume();
-  }
-
-
-  handleStartCapture() {
-    this.captureEngine.pause();
-  }
-
   handleDisplayDetails(x, packet) {
     this.setState(Object.assign(this.state, { "currentPacket": packet }));
+  }
+
+  handleChangeCaptureState(started) {
+    if (started)
+      this.captureEngine.resume();
+    else
+      this.captureEngine.pause()
   }
 }

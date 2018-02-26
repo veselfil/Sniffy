@@ -2,6 +2,7 @@ import React from 'react';
 import HexView from './HexView'
 import PropTypes from 'prop-types';
 import stylesheet from './PacketContents.css'
+import PacketDetails from './PacketDetails'
 
 export default class PacketContents extends React.Component {
   render() {
@@ -11,9 +12,7 @@ export default class PacketContents extends React.Component {
     return (
       <div className={"row " + stylesheet.contentContainer}>
         <div className={"col-md-6"}>
-          <div><strong>Source IP address: </strong>{this.props.packet.sourceIP}</div>
-          <div><strong>Target IP address: </strong>{this.props.packet.targetIP}</div>
-          <div><strong>Packet length: </strong>{this.props.packet.getLength()}</div>
+          <PacketDetails packet={this.props.packet} />
         </div>
         <div className={"col-md-6"}>
           <div><strong>Packet content: </strong>
