@@ -1,4 +1,5 @@
 import net from 'net';
+import dgram from 'dgram';
 import PacketAnalyzer from "../packet_analysis/PacketAnalyzer";
 
 export default class PacketCaptureInterface {
@@ -24,29 +25,17 @@ export default class PacketCaptureInterface {
     const analyzer = this.analyzer;
     let counter = 0;
 
-    this.server = net.createServer((socket) => {
-      socket.on('data', (data) => {
-        console.log("Received packet number: " + (counter++));
-        console.log("Length: " + data.length);
-        if (!this.listen) return;
+    this.server = dgram.createSocket("udp4");
 
-        const dataBuffer = Buffer.from(data);
+    this.server.on("message", (msg, rinfo) => {
+      const dataBuffer = Buffer.from(msg);
+      console.log("Received a packet.");
 
-        // console.log(dataBuffer.toString("hex"));
-
-        this.packets.push(analyzer.analyzePacket(dataBuffer));
-        this.updateCallback(this.getPacketList(this.displayCount));
-      });
-    }).on('error', (err) => {
-      this.errorCallback(err);
+      this.packets.push(analyzer.analyzePacket(dataBuffer));
+      this.updateCallback(this.getPacketList(this.displayCount));
     });
 
-    this.server.listen({
-      port: this.port,
-      host: "localhost",
-      exclusive: true
-    }, () => console.log("a callback"));
-
+    this.server.bind(5005);
     return this;
   }
 
