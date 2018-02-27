@@ -44,7 +44,7 @@ export default class PacketTable extends React.Component {
           {packetData.map((x, idx) => (
             <tr onClick={(e) => this.processClick(e, { x })} key={idx} style={{ background: mapColor(x.protocol) }}>
               <td className={stylesheet.lengthCol}>{x.getLength()}</td>
-              <td className={stylesheet.protoCol}>{x.protocol}</td>
+              <td className={stylesheet.protoCol}>{x.getProtocol()}</td>
               <td className={stylesheet.ipCol}>{x.sourceIP}</td>
               <td className={stylesheet.ipCol}>{x.targetIP}</td>
               <td className={stylesheet.portCol}>{x.sourcePort}</td>

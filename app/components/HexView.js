@@ -7,9 +7,6 @@ export default class HexView extends React.Component {
   SEGMENT_LENGTH = 24;
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log('Fucking hexstring: ');
-    console.log(nextProps.hexString);
-
     return this.props.displayTextView !== nextProps.displayTextView
       || this.props.hexString !== nextProps.hexString;
   }

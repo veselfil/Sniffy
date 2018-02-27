@@ -28,6 +28,7 @@ export default class PacketDetails extends React.Component {
   render() {
     const packet = this.props.packet;
     const getField = (name) => packet != null ? packet[ name ] : "";
+    const packetProtocol = packet != null ? packet.getProtocol() : 0;
 
     return (
       <div className={stylesheet.container}>
@@ -38,7 +39,7 @@ export default class PacketDetails extends React.Component {
 
         {this.renderInfoRow([
           { title: "Length", value: getField("data").length },
-          { title: "Protocol", value: getField("protocol") } ])
+          { title: "Protocol", value: packetProtocol } ])
         }
 
         {this.renderInfoRow([
@@ -48,7 +49,7 @@ export default class PacketDetails extends React.Component {
       </div>
     );
   }
-  
+
 };
 
 PacketDetails.propTypes = {

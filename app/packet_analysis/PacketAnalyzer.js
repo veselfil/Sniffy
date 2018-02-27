@@ -1,27 +1,36 @@
 import Packet from "./Packet";
 import {
-  DEST_PORT, ETHERNET_HEADER_LENGTH, PROTOCOL_MAP, PROTOCOL_TCP, PROTOCOL_UDP,
+  DEST_PORT, ETHERNET_HEADER_LENGTH, L3_PROTOCOL_MAP, L2_PROTOCOL_MAP, PROTOCOL_TCP, PROTOCOL_UDP,
   SOURCE_PORT
 } from "../constants/packets";
+import { readBufferBytesAsBuffer, readBufferBytesAsInt, readBufferBytesAsString } from "../actions/buffer-utils";
 
 export default class PacketAnalyzer {
+  /** Ethernet frame analysis */
   analyzeL2(packetData, packet) {
-    if (this.isIpv4Packet(packetData))
-      packet.isIPv4 = true;
+    packet.targetMAC = readBufferBytesAsString(packetData, 0, 6);
+    packet.sourceMAC = readBufferBytesAsString(packetData, 6, 6);
+
+    const etherTypeValue = readBufferBytesAsInt(packetData, 12, 2);
+    packet.etherType = etherTypeValue;
+    packet.L3Protocol = L2_PROTOCOL_MAP.find(x => parseInt(x.key) === etherTypeValue);
+    packet.isIpv4 = packet.etherType === 0x0800; // 0x0800 is IPv4 EtherType
 
     return packet;
   }
 
+  /* IP packet analysis. */
   analyzeL3(packetData, packet) {
-    if (!packet.isIPv4) return packet;
+    if (!packet.isIpv4) return packet;
 
     packet.sourceIP = this.getIPv4Address(packetData, ETHERNET_HEADER_LENGTH + 12);
     packet.targetIP = this.getIPv4Address(packetData, ETHERNET_HEADER_LENGTH + 16);
-    packet.protocol = this.getProtocolName(this.getProtocolNumber(packetData));
+    packet.L4Protocol = this.getProtocolName(this.getProtocolNumber(packetData));
 
     return packet;
   }
 
+  /* TCP or UDP analysis */
   analyzeL4(packetData, packet) {
     console.log(packet.protocol);
     switch (packet.protocol) {
@@ -38,10 +47,11 @@ export default class PacketAnalyzer {
     }
   }
 
+  /* Application layer analysis. */
   analyzeL7(packetData, packet) {
     switch (packet.targetPort) {
       case 80:
-        packet.protocol = "HTTP";
+        packet.L7Protocol = "HTTP";
         return packet;
     }
 
@@ -79,7 +89,7 @@ export default class PacketAnalyzer {
   };
 
   getProtocolName(protoNumber) {
-    let protoName = PROTOCOL_MAP.find(x => x.number === protoNumber.toString());
+    let protoName = L3_PROTOCOL_MAP.find(x => x.number === protoNumber.toString());
     if (typeof protoName === 'undefined') {
       protoName = 'unknown';
     } else protoName = protoName.proto;

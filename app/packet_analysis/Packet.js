@@ -10,6 +10,13 @@ export default class Packet {
   content = null;
   sourcePort = null;
   targetPort = null;
+  sourceMAC = null;
+  targetMAC = null;
+  L3Protocol = null;
+  L4Protocol = null;
+  L7Protocol = null;
+  etherType = null;
+
 
   constructor(data) {
     this.data = data;
@@ -18,6 +25,15 @@ export default class Packet {
 
   getLength() {
     return this.data.length;
+  }
+
+  getProtocol() {
+    if (this.L7Protocol !== null)
+      return this.L7Protocol;
+    else if (this.L4Protocol !== null)
+      return this.L4Protocol;
+    else
+      return this.L3Protocol;
   }
 }
 

@@ -28,9 +28,9 @@ export default class PacketCaptureInterface {
     this.server = dgram.createSocket("udp4");
 
     this.server.on("message", (msg, rinfo) => {
-      const dataBuffer = Buffer.from(msg);
-      console.log("Received a packet.");
+      console.log("Packet index: " + counter++);
 
+      const dataBuffer = Buffer.from(msg);
       this.packets.push(analyzer.analyzePacket(dataBuffer));
       this.updateCallback(this.getPacketList(this.displayCount));
     });
