@@ -8,6 +8,12 @@ export default class PacketCaptureInterface {
     this.packets = [];
     this.analyzer = new PacketAnalyzer();
     this.displayCount = 100;
+    this.ignoreNonIPv4 = true;
+  }
+
+  setIngnoreNonIpv4(value) {
+    this.ignoreNonIPv4 = value;
+    return this;
   }
 
   onUpdate(callback) {
@@ -23,16 +29,18 @@ export default class PacketCaptureInterface {
   listen() {
     this.resume();
     const analyzer = this.analyzer;
-    let counter = 0;
-
     this.server = dgram.createSocket("udp4");
 
     this.server.on("message", (msg, rinfo) => {
-      console.log("Packet index: " + counter++);
+      if (!this.listen) return;
 
       const dataBuffer = Buffer.from(msg);
-      this.packets.push(analyzer.analyzePacket(dataBuffer));
-      this.updateCallback(this.getPacketList(this.displayCount));
+      const analyzedPacket = analyzer.analyzePacket(dataBuffer);
+
+      if (!this.ignoreNonIPv4 || analyzedPacket.isIpv4) {
+        this.packets.push(analyzer.analyzePacket(dataBuffer));
+        this.updateCallback(this.getPacketList(this.displayCount));
+      }
     });
 
     this.server.bind(5005);

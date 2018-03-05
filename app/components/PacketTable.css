@@ -16,3 +16,13 @@
 }
 
 .portCol { width: 10vw; }
+
+.fixedHeader {
+  position: absolute;
+}
+
+.fixedHeader tr th {
+  background: black;
+  color: white;
+  font-weight: bold;
+}

@@ -194,4 +194,210 @@ const L3_PROTOCOL_MAP = [ { number: '0', proto: 'HOPOPT' }, { number: '1', proto
   proto: 'Reserved for extra.'
 } ];
 
-export { L3_PROTOCOL_MAP, L2_PROTOCOL_MAP, ETHERNET_HEADER_LENGTH, PROTOCOL_TCP, PROTOCOL_UDP, DEST_PORT, SOURCE_PORT };
+const TCP_PROTOCOL_MAP = [ { "port": 0, "proto": "Rezervováno, nepoužívá se" }, { "port": 1, "proto": "TCPMUX" }, {
+  "port": 5,
+  "proto": "RJE"
+}, { "port": 7, "proto": "ECHO protocol" }, { "port": 9, "proto": "DISCARD protocol" }, {
+  "port": 11,
+  "proto": "SYSTAT protocol"
+}, { "port": 13, "proto": "DAYTIME protocol" }, { "port": 17, "proto": "QOTD protocol" }, {
+  "port": 18,
+  "proto": "Message send protocol"
+}, { "port": 19, "proto": "CHARGEN (Character Generator) protocol" }, {
+  "port": 20,
+  "proto": "FTP (data)"
+}, { "port": 21, "proto": "FTP (příkazy)" }, { "port": 22, "proto": "SSH" }, {
+  "port": 23,
+  "proto": "Telnet"
+}, { "port": 25, "proto": "SMTP" }, { "port": 37, "proto": "TIME protocol" }, {
+  "port": 49,
+  "proto": "Login Host Protocol TACACS"
+}, { "port": 53, "proto": "DNS" }, { "port": 65, "proto": "TACACS - Database Service" }, {
+  "port": 66,
+  "proto": "Oracle SQL*NET"
+}, { "port": 67, "proto": "BOOTP (server), DHCP" }, { "port": 68, "proto": "BOOTP (klient), DHCP" }, {
+  "port": 69,
+  "proto": "TFTP"
+}, { "port": 70, "proto": "Gopher" }, { "port": 79, "proto": "Finger" }, { "port": 80, "proto": "HTTP" }, {
+  "port": 88,
+  "proto": "Kerberos"
+}, { "port": 109, "proto": "Post Office Protocol - Version 2" }, {
+  "port": 110,
+  "proto": "Post Office Protocol - Version 3, POP3"
+}, { "port": 111, "proto": "SUN Remote Procedure Call" }, { "port": 113, "proto": "ident" }, {
+  "port": 115,
+  "proto": "SFTP - Simple File Transfer Protocol"
+}, { "port": 118, "proto": "SQL Services" }, { "port": 119, "proto": "NNTP" }, {
+  "port": 123,
+  "proto": "NTP"
+}, { "port": 137, "proto": "NetBIOS Name Service" }, {
+  "port": 138,
+  "proto": "NetBIOS Datagram Service"
+}, { "port": 139, "proto": "NetBIOS Session Service" }, { "port": 143, "proto": "IMAP" }, {
+  "port": 156,
+  "proto": "SQL Service"
+}, { "port": 161, "proto": "SNMP" }, { "port": 162, "proto": "SNMPTRAP" }, {
+  "port": 179,
+  "proto": "BGP"
+}, { "port": 194, "proto": "IRC" }, {
+  "port": 220,
+  "proto": "Interactive Mail Access Protocol v3, IMAP"
+}, { "port": 213, "proto": "IPX" }, { "port": 256, "proto": "RAP" }, {
+  "port": 264,
+  "proto": "BGMP, Border Gateway Multicast Protocol"
+}, { "port": 308, "proto": "Novastor Online Backup" }, {
+  "port": 311,
+  "proto": "Apple Server-Admin-Tool, Workgroup-Manager-Tool"
+}, { "port": 318, "proto": "TSP, Time Stamp Protocol" }, {
+  "port": 323,
+  "proto": "IMMP, Internet Message Mapping Protocol"
+}, { "port": 366, "proto": "SMTP, Simple Mail Transfer Protocol. ODMR, On-Demand Mail Relay" }, {
+  "port": 369,
+  "proto": "Rpc2portmap"
+}, { "port": 371, "proto": "ClearCase albd" }, {
+  "port": 383,
+  "proto": "HP OpenView HTTPs Operations Agent"
+}, { "port": 384, "proto": "A Remote Network Server System" }, {
+  "port": 387,
+  "proto": "AURP, AppleTalk Update-based Routing Protocol"
+}, { "port": 389, "proto": "Lightweight Directory Access Protocol, LDAP" }, {
+  "port": 443,
+  "proto": "HTTPS"
+}, { "port": 445, "proto": "Microsoft Active Directory / Sdílení Windows (SMB)" }, {
+  "port": 465,
+  "proto": "SMTPS, SSL"
+}, { "port": 514, "proto": "rsh" }, { "port": 524, "proto": "NCP" }, { "port": 530, "proto": "RPC" }, {
+  "port": 531,
+  "proto": "AOL Instant Messenger, IRC"
+}, { "port": 532, "proto": "netnews" }, { "port": 540, "proto": "UUCP" }, {
+  "port": 554,
+  "proto": "RTSP"
+}, { "port": 563, "proto": "NNTPS" }, { "port": 587, "proto": "email message submission" }, {
+  "port": 591,
+  "proto": "FileMaker 6.0 (and later) Web Sharing (HTTP Alternate, see port 80)"
+}, { "port": 593, "proto": "HTTP RPC Ep Map" }, { "port": 604, "proto": "TUNNEL" }, {
+  "port": 631,
+  "proto": "IPP"
+}, { "port": 636, "proto": "LDAP over SSL" }, {
+  "port": 639,
+  "proto": "MSDP, Multicast Source Discovery Protocol"
+}, { "port": 646, "proto": "LDP, Label Distribution Protocol" }, {
+  "port": 647,
+  "proto": "DHCP Failover Protocol"
+}, { "port": 648, "proto": "RRP, Registry Registrar Protocol" }, {
+  "port": 652,
+  "proto": "DTCP, Dynamic Tunnel Configuration Protocol"
+}, { "port": 654, "proto": "AODV, Ad hoc On-Demand Distance Vector" }, {
+  "port": 993,
+  "proto": "IMAPS, SSL"
+}, { "port": 995, "proto": "POP3S, SSL" } ];
+
+const UDP_PROTOCOL_MAP = [ { "proto": "Rezervováno, nepoužívá se", "port": 0 }, {
+  "proto": "TCPMUX",
+  "port": 1
+}, { "proto": "NTP", "port": 4 }, { "proto": "RJE", "port": 5 }, {
+  "proto": "ECHO protocol",
+  "port": 7
+}, { "proto": "DISCARD protocol", "port": 9 }, {
+  "proto": "SYSTAT protocol",
+  "port": 11
+}, { "proto": "DAYTIME protocol", "port": 13 }, {
+  "proto": "QOTD protocol",
+  "port": 17
+}, { "proto": "Message send protocol", "port": 18 }, {
+  "proto": "CHARGEN (Character Generator) protocol",
+  "port": 19
+}, { "proto": "FTP (data)", "port": 20 }, { "proto": "FTP (příkazy)", "port": 21 }, {
+  "proto": "SSH",
+  "port": 22
+}, { "proto": "Telnet", "port": 23 }, { "proto": "SMTP", "port": 25 }, {
+  "proto": "TIME protocol",
+  "port": 37
+}, { "proto": "Login Host Protocol TACACS", "port": 49 }, {
+  "proto": "DNS",
+  "port": 53
+}, { "proto": "TACACS - Database Service", "port": 65 }, {
+  "proto": "Oracle SQL*NET",
+  "port": 66
+}, { "proto": "BOOTP (server), DHCP", "port": 67 }, { "proto": "BOOTP (klient), DHCP", "port": 68 }, {
+  "proto": "TFTP",
+  "port": 69
+}, { "proto": "Finger", "port": 79 }, { "proto": "HTTP", "port": 80 }, {
+  "proto": "Kerberos",
+  "port": 88
+}, { "proto": "Post Office Protocol - Version 2", "port": 109 }, {
+  "proto": "Post Office Protocol - Version 3, POP3",
+  "port": 110
+}, { "proto": "SUN Remote Procedure Call", "port": 111 }, { "proto": "NNTP", "port": 119 }, {
+  "proto": "NTP",
+  "port": 123
+}, { "proto": "NetBIOS Name Service", "port": 137 }, {
+  "proto": "NetBIOS Datagram Service",
+  "port": 138
+}, { "proto": "NetBIOS Session Service", "port": 139 }, { "proto": "IMAP", "port": 143 }, {
+  "proto": "SQL Service",
+  "port": 156
+}, { "proto": "SNMP", "port": 161 }, { "proto": "SNMPTRAP", "port": 162 }, {
+  "proto": "BGP",
+  "port": 179
+}, { "proto": "IRC", "port": 194 }, {
+  "proto": "Interactive Mail Access Protocol v3, IMAP",
+  "port": 220
+}, { "proto": "IPX", "port": 213 }, {
+  "proto": "RAP",
+  "port": 256
+}, { "proto": "BGMP, Border Gateway Multicast Protocol", "port": 264 }, {
+  "proto": "TSP, Time Stamp Protocol",
+  "port": 318
+}, {
+  "proto": "IMMP, Internet Message Mapping Protocol",
+  "port": 323
+}, {
+  "proto": "SMTP, Simple Mail Transfer Protocol. ODMR, On-Demand Mail Relay",
+  "port": 366
+}, { "proto": "Rpc2portmap", "port": 369 }, {
+  "proto": "ClearCase albd",
+  "port": 371
+}, { "proto": "HP OpenView HTTPs Operations Agent", "port": 383 }, {
+  "proto": "A Remote Network Server System",
+  "port": 384
+}, {
+  "proto": "AURP, AppleTalk Update-based Routing Protocol",
+  "port": 387
+}, { "proto": "Lightweight Directory Access Protocol, LDAP", "port": 389 }, {
+  "proto": "HTTPS",
+  "port": 443
+}, { "proto": "ISAKMP, Internet Secure Association and Key Management Protocol", "port": 500 }, {
+  "proto": "syslog",
+  "port": 514
+}, { "proto": "NCP", "port": 524 }, { "proto": "Timed, Timeserver", "port": 525 }, {
+  "proto": "RPC",
+  "port": 530
+}, { "proto": "AOL Instant Messenger, IRC", "port": 531 }, {
+  "proto": "netwall, For Emergency Broadcasts",
+  "port": 533
+}, { "proto": "DHCPv6 klient", "port": 546 }, { "proto": "DHCPv6 server", "port": 547 }, {
+  "proto": "RTSP",
+  "port": 554
+}, { "proto": "NNTPS", "port": 563 }, { "proto": "HTTP RPC Ep Map", "port": 593 }, {
+  "proto": "IPMI",
+  "port": 623
+}, { "proto": "IPP", "port": 631 }, {
+  "proto": "LDAP over SSL",
+  "port": 636
+}, { "proto": "MSDP, Multicast Source Discovery Protocol", "port": 639 }, {
+  "proto": "LDP, Label Distribution Protocol",
+  "port": 646
+}, { "proto": "Multiplayer Doom", "port": 666 } ];
+
+export {
+  L3_PROTOCOL_MAP,
+  L2_PROTOCOL_MAP,
+  ETHERNET_HEADER_LENGTH,
+  PROTOCOL_TCP,
+  PROTOCOL_UDP,
+  DEST_PORT,
+  SOURCE_PORT,
+  UDP_PROTOCOL_MAP,
+  TCP_PROTOCOL_MAP
+};

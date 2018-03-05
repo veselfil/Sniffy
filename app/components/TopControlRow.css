@@ -1,0 +1,10 @@
+.controlRow {
+  background: #E8E8E8;
+  padding: 8px;
+}
+
+.textField {
+  width: 33%;
+  display: inline-block;
+  margin-right: 16px;
+}

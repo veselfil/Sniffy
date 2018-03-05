@@ -4,33 +4,37 @@ import { mapColor } from '../actions/proto-color-mapping'
 import PropTypes from 'prop-types';
 
 export default class PacketTable extends React.Component {
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.disableAutoscroll)
-      if (this.autoscrollIntervalHandle === -1)
-        this.autoscrollIntervalHandle = setInterval(() => this.messagesEnd.scrollIntoView({ behavior: "smooth" }));
-      else {
-        clearInterval(this.autoscrollIntervalHandle);
-        this.autoscrollIntervalHandle = -1;
-      }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.autoscrollIntervalHandle);
+  componentDidUpdate() {
+    if (this.props.enableAutoscroll)
+      this.tableEnd.scrollIntoView({ behavior: "smooth" })
   }
 
   renderHeader() {
     return (
-      <thead>
+      <thead className={stylesheet.fixedHeader}>
       <tr>
-        <th>Length</th>
-        <th>Protocol</th>
-        <th>Source IP</th>
-        <th>Target IP</th>
-        <th>Source port</th>
-        <th>Target port</th>
+        <th className={stylesheet.lengthCol}>Length</th>
+        <th className={stylesheet.protoCol}>Protocol</th>
+        <th className={stylesheet.ipCol}>Source IP</th>
+        <th className={stylesheet.ipCol}>Target IP</th>
+        <th className={stylesheet.portCol}>Source port</th>
+        <th className={stylesheet.portCol}>Target port</th>
+        {/* scrollbar padding */}
+        <td style={{width: "17px"}}>&nbsp;</td>
       </tr>
       </thead>
     )
+  }
+
+  renderFiller() {
+    return (<tr>
+      <td className={stylesheet.lengthCol}>e</td>
+      <td className={stylesheet.protoCol}>e</td>
+      <td className={stylesheet.ipCol}>e</td>
+      <td className={stylesheet.ipCol}>e</td>
+      <td className={stylesheet.portCol}>e</td>
+      <td className={stylesheet.portCol}>e</td>
+    </tr>);
   }
 
   render() {
@@ -41,6 +45,7 @@ export default class PacketTable extends React.Component {
         <table border="1">
           {this.renderHeader()}
           <tbody>
+          {this.renderFiller()}
           {packetData.map((x, idx) => (
             <tr onClick={(e) => this.processClick(e, { x })} key={idx} style={{ background: mapColor(x.protocol) }}>
               <td className={stylesheet.lengthCol}>{x.getLength()}</td>
@@ -51,14 +56,10 @@ export default class PacketTable extends React.Component {
               <td className={stylesheet.portCol}>{x.targetPort}</td>
             </tr>
           ))}
+          <div style={{ float: "left", clear: "both" }} ref={(el) => { this.tableEnd = el; }} />
           </tbody>
         </table>
-        <div style={{ float: "left", clear: "both" }}
-             ref={(el) => {
-               this.messagesEnd = el;
-             }}>
         </div>
-      </div>
     );
   }
 
@@ -70,5 +71,5 @@ export default class PacketTable extends React.Component {
 PacketTable.propTypes = {
   displayDetails: PropTypes.func,
   packetData: PropTypes.arrayOf(PropTypes.object),
-  disableAutoscroll: PropTypes.bool
+  enableAutoscroll: PropTypes.bool
 };

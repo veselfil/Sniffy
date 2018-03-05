@@ -1,0 +1,9 @@
+.textField {
+  width: 33%;
+  display: inline;
+  margin-right: 8px;
+}
+
+.filterConatainer {
+  padding-right: 16px;
+}

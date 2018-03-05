@@ -1,8 +1,11 @@
 import React from 'react';
+import stylesheet from './PacketCapturePage.css'
+
 import PacketTable from '../components/PacketTable';
 import PacketContents from "../components/PacketContents";
 import PacketCaptureInterface from '../packet_capture/PacketCaptureInterface'
 import StartStopButton from '../components/StartStopButton'
+import TopControlRow from "../components/TopControlRow";
 
 export default class PacketCapturePage extends React.Component {
   constructor() {
@@ -15,7 +18,9 @@ export default class PacketCapturePage extends React.Component {
     this.captureEngine
       .onUpdate((packets) => this.setState(Object.assign(this.state, { "packets": packets })))
       .onError((err) => console.log(err.toString()))
-      .listen();
+      .setIngnoreNonIpv4(true)
+      .listen()
+      .pause();
   }
 
   render() {
@@ -23,14 +28,17 @@ export default class PacketCapturePage extends React.Component {
 
     return (
       <div>
+        <TopControlRow onCaptureStarted={started => this.handleChangeCaptureState(started)}
+                       onDisplayCountChanged={count => this.handleDisplayCountChanged(count)}
+                       onFilterChanged={filterText => this.handleFilterTextChanged(filterText)} />
+
         <PacketTable packetData={this.state.packets}
                      displayDetails={(x, packet) => this.handleDisplayDetails(x, packet)}
-                     disableAutoscroll={this.captureEngine.isRunning()}/>
+                     enableAutoscroll={this.captureEngine.isRunning()}/>
 
-        {shouldRenderPacketDetails && <PacketContents packet={this.state.currentPacket}/>}
-
-        <StartStopButton onChangeState={(started) => this.handleChangeCaptureState(started)}
-                         startedText={"Stop capture"} stoppedText={"Start capture"}/>
+        <div className={stylesheet.packetDetailsContiner}>
+          {shouldRenderPacketDetails && <PacketContents packet={this.state.currentPacket}/>}
+        </div>
       </div>
     );
   }
@@ -43,6 +51,15 @@ export default class PacketCapturePage extends React.Component {
     if (started)
       this.captureEngine.resume();
     else
-      this.captureEngine.pause()
+      this.captureEngine.pause();
+  }
+
+  handleFilterTextChanged(filterText) {
+    this.setState(Object.assign(this.state, { filterText: filterText }));
+  }
+
+  handleDisplayCountChanged(count) {
+    this.captureEngine.setDisplayCount(count);
+    this.setState(Object.assign(this.state, { displayCount: count }));
   }
 }

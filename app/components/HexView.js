@@ -24,9 +24,9 @@ export default class HexView extends React.Component {
           </tr>
           </thead>
           <tbody>
-          {segments.map(line => (
-            <tr>
-              {line.map(x => <td>{x}</td>)}
+          {segments.map((line, index) => (
+            <tr key={index}>
+              {line.map((x, idx) => <td key={idx}>{x}</td>)}
             </tr>
           ))}
           <tr>

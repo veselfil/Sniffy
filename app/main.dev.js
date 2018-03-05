@@ -61,6 +61,7 @@ app.on('ready', async () => {
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
+  mainWindow.setMenu(null);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -74,7 +75,10 @@ app.on('ready', async () => {
     /* TODO: Change this for production packaging. */
     /* I guess this works now. */
     const dirPath = __dirname.replace("\\app", "");
+    console.log(dirPath + "\\PacketCaptureEngineTest.exe");
+
     captureProcess = childProcess.spawn(dirPath + "\\PacketCaptureEngineTest.exe", ["-a", "127.0.0.1", "-p", "5005"]);
+    captureProcess.stdout.on("data", (data) => console.log(data.toString()));
   });
 
   mainWindow.on('closed', () => {
