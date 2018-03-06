@@ -4,8 +4,13 @@
 
 .cellTitle {
   font-weight: 700;
+  text-align: center;
+  padding-top: 32px;
 }
 
 .cellValue {
   font-weight: 300;
+  text-align: center;
 }
+
+.first { padding-top: 16px; }

@@ -16,7 +16,7 @@ export default class Packet {
   L4Protocol = null;
   L7Protocol = null;
   etherType = null;
-
+  descriptionText = null;
 
   constructor(data) {
     this.data = data;

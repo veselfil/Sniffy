@@ -7,7 +7,6 @@ export default class PacketCaptureInterface {
     this.port = port;
     this.packets = [];
     this.analyzer = new PacketAnalyzer();
-    this.displayCount = 100;
     this.ignoreNonIPv4 = true;
   }
 
@@ -39,7 +38,7 @@ export default class PacketCaptureInterface {
 
       if (!this.ignoreNonIPv4 || analyzedPacket.isIpv4) {
         this.packets.push(analyzer.analyzePacket(dataBuffer));
-        this.updateCallback(this.getPacketList(this.displayCount));
+        this.updateCallback(this.getPacketList());
       }
     });
 
@@ -55,15 +54,11 @@ export default class PacketCaptureInterface {
     this.listen = false;
   }
 
-  getPacketList(count) {
-    return this.packets.slice(this.packets.length - count);
+  getPacketList() {
+    return this.packets;
   }
 
   isRunning() {
     return this.listen;
-  }
-
-  setDisplayCount(count) {
-    this.displayCount = count;
   }
 }

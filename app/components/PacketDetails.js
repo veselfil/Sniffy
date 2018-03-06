@@ -8,15 +8,15 @@ export default class PacketDetails extends React.Component {
     super();
   }
 
-  renderInfoRow(fields) {
+  renderInfoRow(fields, first=false) {
     return (
       <div className={"row"}>
         {fields.map(x => (
           <div className={"col-md-6"}>
-            <div className={"center " + stylesheet.cellTitle}>
+            <div className={"center " + stylesheet.cellTitle + (first ? " " + stylesheet.first : "")}>
               {x.title}
             </div>
-            <div className={"center" + stylesheet.cellValue}>
+            <div className={"center " + stylesheet.cellValue}>
               {x.value}
             </div>
           </div>
@@ -34,7 +34,7 @@ export default class PacketDetails extends React.Component {
       <div className={stylesheet.container}>
         {this.renderInfoRow([
           { title: "Source IP", value: getField("sourceIP") },
-          { title: "Target IP", value: getField("targetIP") } ])
+          { title: "Target IP", value: getField("targetIP") } ], true)
         }
 
         {this.renderInfoRow([

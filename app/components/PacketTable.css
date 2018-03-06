@@ -7,7 +7,7 @@
 }
 
 .ipCol {
-  width: 25vw;
+  width: 20vw;
 }
 
 .tableContainer {
@@ -15,14 +15,15 @@
   overflow-y: scroll;
 }
 
-.portCol { width: 10vw; }
+.descriptionCol { width: 30vw; }
 
 .fixedHeader {
   position: absolute;
 }
 
 .fixedHeader tr th {
-  background: black;
+  background: #555;
+  border: none;
   color: white;
   font-weight: bold;
 }

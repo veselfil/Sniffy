@@ -17,8 +17,7 @@ export default class PacketTable extends React.Component {
         <th className={stylesheet.protoCol}>Protocol</th>
         <th className={stylesheet.ipCol}>Source IP</th>
         <th className={stylesheet.ipCol}>Target IP</th>
-        <th className={stylesheet.portCol}>Source port</th>
-        <th className={stylesheet.portCol}>Target port</th>
+        <th className={stylesheet.descriptionCol}>Description</th>
         {/* scrollbar padding */}
         <td style={{width: "17px"}}>&nbsp;</td>
       </tr>
@@ -32,8 +31,7 @@ export default class PacketTable extends React.Component {
       <td className={stylesheet.protoCol}>e</td>
       <td className={stylesheet.ipCol}>e</td>
       <td className={stylesheet.ipCol}>e</td>
-      <td className={stylesheet.portCol}>e</td>
-      <td className={stylesheet.portCol}>e</td>
+      <td className={stylesheet.descriptionCol}>e</td>
     </tr>);
   }
 
@@ -42,7 +40,7 @@ export default class PacketTable extends React.Component {
 
     return (
       <div className={stylesheet.tableContainer}>
-        <table border="1">
+        <table>
           {this.renderHeader()}
           <tbody>
           {this.renderFiller()}
@@ -52,8 +50,7 @@ export default class PacketTable extends React.Component {
               <td className={stylesheet.protoCol}>{x.getProtocol()}</td>
               <td className={stylesheet.ipCol}>{x.sourceIP}</td>
               <td className={stylesheet.ipCol}>{x.targetIP}</td>
-              <td className={stylesheet.portCol}>{x.sourcePort}</td>
-              <td className={stylesheet.portCol}>{x.targetPort}</td>
+              <td className={stylesheet.descriptionCol}>{x.descriptionText}</td>
             </tr>
           ))}
           <div style={{ float: "left", clear: "both" }} ref={(el) => { this.tableEnd = el; }} />

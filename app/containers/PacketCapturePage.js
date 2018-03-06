@@ -6,18 +6,19 @@ import PacketContents from "../components/PacketContents";
 import PacketCaptureInterface from '../packet_capture/PacketCaptureInterface'
 import StartStopButton from '../components/StartStopButton'
 import TopControlRow from "../components/TopControlRow";
+import PacketFilter from "../packet_analysis/PacketFilter";
 
 export default class PacketCapturePage extends React.Component {
   constructor() {
     super();
     this.captureEngine = new PacketCaptureInterface(5005);
-    this.state = { "packets": [], currentPacket: null };
+    this.state = { "packets": [], currentPacket: null, displayCount: 100 };
   }
 
   componentDidMount() {
     this.captureEngine
-      .onUpdate((packets) => this.setState(Object.assign(this.state, { "packets": packets })))
-      .onError((err) => console.log(err.toString()))
+      .onUpdate(packets => this.setState(Object.assign(this.state, { "packets": packets })))
+      .onError(err => console.log(err.toString()))
       .setIngnoreNonIpv4(true)
       .listen()
       .pause();
@@ -32,7 +33,7 @@ export default class PacketCapturePage extends React.Component {
                        onDisplayCountChanged={count => this.handleDisplayCountChanged(count)}
                        onFilterChanged={filterText => this.handleFilterTextChanged(filterText)} />
 
-        <PacketTable packetData={this.state.packets}
+        <PacketTable packetData={this.filterPackets(this.state.packets)}
                      displayDetails={(x, packet) => this.handleDisplayDetails(x, packet)}
                      enableAutoscroll={this.captureEngine.isRunning()}/>
 
@@ -41,6 +42,15 @@ export default class PacketCapturePage extends React.Component {
         </div>
       </div>
     );
+  }
+
+  filterPackets(packetList) {
+    console.log(this.state.filterEngine);
+
+    if (this.state.filterEngine == null)
+      return packetList;
+
+    return this.state.filterEngine.filterPacketList(packetList, this.state.displayCount);
   }
 
   handleDisplayDetails(x, packet) {
@@ -55,11 +65,10 @@ export default class PacketCapturePage extends React.Component {
   }
 
   handleFilterTextChanged(filterText) {
-    this.setState(Object.assign(this.state, { filterText: filterText }));
+    this.setState(Object.assign(this.state, { filterText: filterText, filterEngine: new PacketFilter(filterText) }));
   }
 
   handleDisplayCountChanged(count) {
-    this.captureEngine.setDisplayCount(count);
     this.setState(Object.assign(this.state, { displayCount: count }));
   }
 }

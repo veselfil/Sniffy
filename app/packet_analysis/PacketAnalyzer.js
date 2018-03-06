@@ -47,10 +47,13 @@ export default class PacketAnalyzer {
       case "TCP":
         packet.sourcePort = this.getPort(packetData, SOURCE_PORT);
         packet.targetPort = this.getPort(packetData, DEST_PORT);
+        packet.descriptionText = "Source port: " + packet.sourcePort + ", target port: " + packet.targetPort;
         return packet;
       case "UDP":
         packet.sourcePort = this.getPort(packetData, SOURCE_PORT);
         packet.targetPort = this.getPort(packetData, DEST_PORT);
+
+        packet.descriptionText = "Source port: " + packet.sourcePort + ", target port: " + packet.targetPort;
         return packet;
       default:
         return packet;
@@ -62,10 +65,15 @@ export default class PacketAnalyzer {
     if (packet.L4Protocol === null)
       return packet;
 
-    if (packet.L4Protocol.trim() === "TCP")
-      packet.L7Protocol = TCP_PROTOCOL_MAP.find(x => x.port === packet.targetPort).proto;
-    else if (packet.L4Protocol.trim() === "UDP")
-      packet.L7Protocol = UDP_PROTOCOL_MAP.find(x => x.port === packet.targetPort).proto;
+    if (packet.L4Protocol.trim() === "TCP") {
+      const protocol = TCP_PROTOCOL_MAP.find(x => x.port === packet.targetPort) //.proto;
+      if (typeof protocol !== "undefined")
+        packet.L7Protocol = protocol.proto;
+    } else if (packet.L4Protocol.trim() === "UDP"){
+      const protocol = UDP_PROTOCOL_MAP.find(x => x.port === packet.targetPort);
+      if (typeof protocol !== "undefined")
+        packet.L7Protocol = protocol.proto;
+    }
 
     if (typeof packet.L7Protocol === "undefined")
       packet.L7Protocol = null;
