@@ -4,9 +4,10 @@ import stylesheet from './PacketCapturePage.css'
 import PacketTable from '../components/PacketTable';
 import PacketContents from "../components/PacketContents";
 import PacketCaptureInterface from '../packet_capture/PacketCaptureInterface'
-import StartStopButton from '../components/StartStopButton'
 import TopControlRow from "../components/TopControlRow";
 import PacketFilter from "../packet_analysis/PacketFilter";
+
+import { exportFile } from "../actions/file-exports";
 
 export default class PacketCapturePage extends React.Component {
   constructor() {
@@ -31,7 +32,8 @@ export default class PacketCapturePage extends React.Component {
       <div>
         <TopControlRow onCaptureStarted={started => this.handleChangeCaptureState(started)}
                        onDisplayCountChanged={count => this.handleDisplayCountChanged(count)}
-                       onFilterChanged={filterText => this.handleFilterTextChanged(filterText)} />
+                       onFilterChanged={filterText => this.handleFilterTextChanged(filterText)}
+                       onExportClick={() => this.handleExport()}/>
 
         <PacketTable packetData={this.filterPackets(this.state.packets)}
                      displayDetails={(x, packet) => this.handleDisplayDetails(x, packet)}
@@ -45,8 +47,6 @@ export default class PacketCapturePage extends React.Component {
   }
 
   filterPackets(packetList) {
-    console.log(this.state.filterEngine);
-
     if (this.state.filterEngine == null)
       return packetList;
 
@@ -70,5 +70,9 @@ export default class PacketCapturePage extends React.Component {
 
   handleDisplayCountChanged(count) {
     this.setState(Object.assign(this.state, { displayCount: count }));
+  }
+
+  handleExport() {
+    exportFile(this.state.packets);
   }
 }

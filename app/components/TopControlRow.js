@@ -2,7 +2,7 @@ import React from 'react';
 import stylesheet from './TopControlRow.css'
 import PropTypes from 'prop-types';
 import StartStopButton from './StartStopButton'
-import FilterField from "./FilterField";
+import ConfirmedField from "./ConfirmedField";
 
 export default class TopControlRow extends React.Component {
   constructor() {
@@ -17,11 +17,17 @@ export default class TopControlRow extends React.Component {
   render() {
     return (
       <div className={stylesheet.controlRow}>
-        <FilterField onInput={text => this.handleFilterChange(text)} />
-        <input type={"text"} onChange={(event) => this.handleDisplayCountChange(event)} value={this.state.displayCount}
-               className={"form-control " + stylesheet.textField}/>
-        <StartStopButton stoppedText={"Start"} startedText={"Stop"}
+        <ConfirmedField onInput={text => this.handleFilterChange(text)}
+                        buttonText={"Filter"}
+                        inputFieldWidth={"200px"} />
+        <ConfirmedField onInput={text => this.handleDisplayCountChange(text)}
+                        buttonText={"Confirm"}
+                        inputFieldWidth={"100px"} />
+        <StartStopButton stoppedText={"Start"}
+                         startedText={"Stop"}
                          onChangeState={started => this.handleCaptureToggle(started)}/>
+
+        <button onClick={() => this.handleExportClick()}>Export</button>
       </div>
     );
   }
@@ -36,16 +42,21 @@ export default class TopControlRow extends React.Component {
     this.setState(Object.assign(this.state, { filterText: text }));
   }
 
-  handleDisplayCountChange(event) {
-    const value = parseInt(event.target.value.toString());
+  handleDisplayCountChange(text) {
+    const value = parseInt(text);
 
     this.props.onDisplayCountChanged(value);
     this.setState(Object.assign(this.state, { displayCount: value }));
+  }
+
+  handleExportClick() {
+    this.props.onExportClick();
   }
 }
 
 TopControlRow.propTypes = {
   onCaptureStarted: PropTypes.func,
   onFilterChanged: PropTypes.func,
-  onDisplayCountChanged: PropTypes.func
+  onDisplayCountChanged: PropTypes.func,
+  onExportClick: PropTypes.func
 };

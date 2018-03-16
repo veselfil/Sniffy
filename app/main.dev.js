@@ -10,7 +10,8 @@
  *
  * @flow
  */
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import fs from 'fs';
 import childProcess from 'child_process';
 
 let mainWindow = null;
@@ -74,9 +75,8 @@ app.on('ready', async () => {
 
     /* TODO: Change this for production packaging. */
     /* I guess this works now. */
-    const dirPath = __dirname.replace("\\app", "");
-    console.log(dirPath + "\\PacketCaptureEngineTest.exe");
 
+    const dirPath = __dirname.replace("\\app", "");
     captureProcess = childProcess.spawn(dirPath + "\\PacketCaptureEngineTest.exe", ["-a", "127.0.0.1", "-p", "5005"]);
     captureProcess.stdout.on("data", (data) => console.log(data.toString()));
   });
@@ -86,5 +86,14 @@ app.on('ready', async () => {
       captureProcess.kill();
 
     mainWindow = null;
+  });
+
+  ipcMain.on("export-file", (event, fileContent) => {
+    console.log(fileContent);
+
+    dialog.showSaveDialog(mainWindow, (filename) => {
+      const descriptor = fs.openSync(filename, "w");
+      fs.write(descriptor, fileContent.toString(), () => {});
+    })
   });
 });
