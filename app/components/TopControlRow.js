@@ -27,7 +27,7 @@ export default class TopControlRow extends React.Component {
                          startedText={"Stop"}
                          onChangeState={started => this.handleCaptureToggle(started)}/>
 
-        <button onClick={() => this.handleExportClick()}>Export</button>
+        <button onClick={() => this.handleExportClick()} className={"btn btn-default"} style={{ marginLeft: "8px" }}>Export</button>
       </div>
     );
   }

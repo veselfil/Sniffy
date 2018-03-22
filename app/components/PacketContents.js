@@ -15,7 +15,7 @@ export default class PacketContents extends React.Component {
           <PacketDetails packet={this.props.packet} />
         </div>
         <div className={"col-md-6"}>
-          <div><strong>Packet content: </strong>
+          <div className={stylesheet.packetContentContainer}><strong>Packet content: </strong>
             <hr/>
             <HexView hexString={this.props.packet.content} displayTextView={false}/>
           </div>

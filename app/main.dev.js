@@ -92,6 +92,9 @@ app.on('ready', async () => {
     console.log(fileContent);
 
     dialog.showSaveDialog(mainWindow, (filename) => {
+      if (typeof filename === "undefined")
+        return;
+
       const descriptor = fs.openSync(filename, "w");
       fs.write(descriptor, fileContent.toString(), () => {});
     })

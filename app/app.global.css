@@ -9,6 +9,7 @@ body {
   height: 100vh;
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   overflow-y: hidden;
+  background: #2B303B;
 }
 
 h2 {
@@ -37,4 +38,18 @@ a:hover {
   opacity: 1;
   text-decoration: none;
   cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgba(147, 156, 184, 0.8);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(65, 67, 75, 0.8);
 }

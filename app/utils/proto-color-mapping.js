@@ -6,6 +6,6 @@ export const mapColor = (protoName) => {
     case "UDP":
       return "#ffbe70";
     default:
-      return "#AAA"
+      return "#76af8c"
   }
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import stylesheet from './PacketTable.css'
-import { mapColor } from '../actions/proto-color-mapping'
+import { mapColor } from '../utils/proto-color-mapping'
 import PropTypes from 'prop-types';
 
 export default class PacketTable extends React.Component {
@@ -19,14 +19,14 @@ export default class PacketTable extends React.Component {
         <th className={stylesheet.ipCol}>Target IP</th>
         <th className={stylesheet.descriptionCol}>Description</th>
         {/* scrollbar padding */}
-        <td style={{width: "17px"}}>&nbsp;</td>
+        <td style={{ width: "5px" }}/>
       </tr>
       </thead>
     )
   }
 
   renderFiller() {
-    return (<tr>
+    return (<tr className={stylesheet.filler}>
       <td className={stylesheet.lengthCol}>e</td>
       <td className={stylesheet.protoCol}>e</td>
       <td className={stylesheet.ipCol}>e</td>
@@ -45,7 +45,7 @@ export default class PacketTable extends React.Component {
           <tbody>
           {this.renderFiller()}
           {packetData.map((x, idx) => (
-            <tr onClick={(e) => this.processClick(e, { x })} key={idx} style={{ background: mapColor(x.protocol) }}>
+            <tr onClick={(e) => this.processClick(e, { x })} key={idx} style={{ background: mapColor(x.getProtocol()) }}>
               <td className={stylesheet.lengthCol}>{x.getLength()}</td>
               <td className={stylesheet.protoCol}>{x.getProtocol()}</td>
               <td className={stylesheet.ipCol}>{x.sourceIP}</td>

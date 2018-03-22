@@ -10,7 +10,7 @@ import {
   UDP_PROTOCOL_MAP,
   SOURCE_PORT
 } from "../constants/packets";
-import { readBufferBytesAsBuffer, readBufferBytesAsInt, readBufferBytesAsString } from "../actions/buffer-utils";
+import { readBufferBytesAsBuffer, readBufferBytesAsInt, readBufferBytesAsString } from "../utils/buffer-utils";
 
 export default class PacketAnalyzer {
   /** Ethernet frame analysis */

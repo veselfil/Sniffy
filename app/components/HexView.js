@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {splitStringToSegments} from "../actions/packet-content-formatting";
+import {splitStringToSegments} from "../utils/packet-content-formatting";
 import stylesheet from './HexView.css'
 
 export default class HexView extends React.Component {

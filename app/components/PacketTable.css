@@ -19,11 +19,16 @@
 
 .fixedHeader {
   position: absolute;
+  width: 100vw;
 }
 
+.filler { padding-top: 8px; padding-bottom: 8px; }
+
 .fixedHeader tr th {
-  background: #555;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background: #3f4757;
   border: none;
-  color: white;
+  color: #eeeeee;
   font-weight: bold;
 }

@@ -1,0 +1,3 @@
+#2B303B primary
+#414a5e secondary
+#e53734 accent

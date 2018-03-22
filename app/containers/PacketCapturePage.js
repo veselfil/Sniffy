@@ -7,7 +7,7 @@ import PacketCaptureInterface from '../packet_capture/PacketCaptureInterface'
 import TopControlRow from "../components/TopControlRow";
 import PacketFilter from "../packet_analysis/PacketFilter";
 
-import { exportFile } from "../actions/file-exports";
+import { exportFile } from "../utils/file-exports";
 
 export default class PacketCapturePage extends React.Component {
   constructor() {
