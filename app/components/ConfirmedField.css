@@ -1,9 +1,21 @@
 .textField {
-  width: 33%;
-  display: inline;
-  margin-right: 8px;
+    width: 33%;
+    display: inline;
+    margin-right: 8px;
+    background: #424242;
+    border: none;
+    outline: none;
+    color: #EEEEEE;
+}
+
+.textField:active,
+.textField:focus {
+    background: #626262;
+    border: none;
+    outline: none;
+    color: #FAFAFA;
 }
 
 .filterConatainer {
-  padding-right: 16px;
+    padding-right: 16px;
 }

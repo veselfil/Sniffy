@@ -3,7 +3,6 @@
  */
 export default class Packet {
   data = null;
-  port = null;
   sourceIP = null;
   targetIP = null;
   isIpv4 = null;

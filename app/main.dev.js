@@ -85,6 +85,7 @@ app.on('ready', async () => {
     if (captureProcess !== null)
       captureProcess.kill();
 
+
     mainWindow = null;
   });
 
